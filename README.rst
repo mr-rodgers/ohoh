@@ -8,7 +8,7 @@ A debug server for WSGI applications.
 
 
 .. |build-status| image:: https://travis-ci.org/te-je/ohoh.svg?branch=develop
-    :target: https://travis-ci.org/geniphi/ohoh
+    :target: https://travis-ci.org/te-je/ohoh
     :alt: build status
     :scale: 100%
     
