@@ -58,7 +58,7 @@ setup(
     setup_requires=['setuptools_scm'],
     use_scm_version={"write_to": "ohoh/VERSION.txt"},
 
-    packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
+    packages=find_packages(exclude=['tests']),
     install_requires=requires,
 
     extras_require={
