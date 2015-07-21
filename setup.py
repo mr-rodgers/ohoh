@@ -13,7 +13,7 @@ def read(relpath):
 
 requires = []
 
-if (sys.version_info < (2, 7) < (3, 0)) or (sys.version_info >= (3,) < (3, 3)):
+if (sys.version_info < (2, 7) < (3, 0)) or ((3,) <= sys.version_info <  (3, 2)):
     requires.append("argparse")
 
 
