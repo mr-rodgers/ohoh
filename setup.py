@@ -13,8 +13,15 @@ def read(relpath):
 
 requires = []
 
-if (sys.version_info < (2, 7) < (3, 0)) or ((3,) <= sys.version_info <  (3, 2)):
+if sys.version_info < (2, 7):
     requires.append("argparse")
+    requires.append("importlib")
+
+if (3, ) <= sys.version_info < (3, 2):
+    requires.append("argparse")
+
+if (3, ) <= sys.version_info < (3, 1):
+    requires.append("importlib")
 
 
 setup(
@@ -75,5 +82,5 @@ setup(
         ],
     },
 
-    use_2to3 = True,
+    use_2to3=True,
 )
