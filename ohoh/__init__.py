@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 from codecs import open
 from importlib import import_module
 from os import path
+import logging
 import re
 import sys
 
@@ -10,6 +11,11 @@ here = path.dirname(__file__)
 with open(path.join(here, "VERSION.txt"), encoding="ascii") as f:
     __version__ = f.read().strip()
 
+
+# Verbosity levels; from 0 to 3
+VERBOSITY = [logging.INFO + 5, logging.INFO, logging.DEBUG + 5, logging.DEBUG]
+LOG = logging.getLogger(__name__)
+LOG.setLevel(logging.DEBUG)
 
 DEFAULT_HOST = ""
 DEFAULT_PORT = 5000
@@ -130,7 +136,14 @@ def build_parser():
 
 def main():
     parser = build_parser()
-    print parser.parse_args()
+    args = parser.parse_args()
+
+    # Set up the log handler according to what the user request
+    handler = logging.StreamHandler()
+    handler.setLevel(VERBOSITY[min(args.verbosity, 3)])
+    formatter = logging.Formatter("%(message)s")
+    handler.setFormatter(formatter)
+    LOG.addHandler(handler)
 
 
 if __name__ == '__main__':
