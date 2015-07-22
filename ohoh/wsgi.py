@@ -2,6 +2,7 @@ from __future__ import absolute_import
 from io import TextIOBase
 from wsgiref.simple_server import make_server, WSGIRequestHandler, WSGIServer
 import logging
+import sys
 
 from .middleware import DebugAppMiddleware
 import ohoh
@@ -34,7 +35,6 @@ class _OhOhServer(WSGIServer):
         else:
             LOG.exception("Exception occurred during request from %s:%d",
                           *client_address)
-
 
 
 def run_simple(host, port, wsgi_app, use_debugger=True,

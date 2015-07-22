@@ -38,7 +38,7 @@ def modname(modfile):
     ("localhost:80", ("localhost", 80)),
     ("google.com", ("google.com", DEFAULT_PORT)),
     ("google.com:80", ("google.com", 80)),
-    (":5868", (DEFAULT_HOST, 5868)),
+    (":5868", ("", 5868)),
 ])
 def test_address_parse(address, expected, modname, parser):
     args = ["-s", address, modname] if address else [modname]
