@@ -1,7 +1,9 @@
 from __future__ import absolute_import
 from io import TextIOBase
-from wsgiref.simple_server import make_server, WSGIRequestHandler, WSGIServer
+from wsgiref.simple_server import make_server as make_wsgi_server
+from wsgiref.simple_server import WSGIRequestHandler, WSGIServer
 import logging
+import server_reloader
 import sys
 
 from .middleware import DebugAppMiddleware
@@ -37,21 +39,40 @@ class _OhOhServer(WSGIServer):
                           *client_address)
 
 
-def run_simple(host, port, wsgi_app, use_debugger=True,
-               server_class=_OhOhServer,
-               handler_class=OhOhRequestHandler):
+def make_server(host, port, wsgi_app, use_debugger=True,
+                server_class=_OhOhServer, handler_class=OhOhRequestHandler):
     if use_debugger:
         LOG.debug("Wrapping WSGI application: %r", wsgi_app)
         wsgi_app = DebugAppMiddleware(wsgi_app)
 
-    # Construct the server
-    httpd = make_server(host, port, wsgi_app, handler_class=handler_class)
+    return make_wsgi_server(host, port, wsgi_app, handler_class=handler_class)
 
-    # Run the server
-    LOG.log(logging.INFO + 5, "* Serving on %s:%d %s...",
-            host, port, "with debugger" if use_debugger else "")
-    try:
-        return httpd.serve_forever()
-    except KeyboardInterrupt:
-        LOG.log(logging.DEBUG + 5, "Keyboard Interrupt. Stopping server.")
-        return
+
+def run_simple(host, port, wsgi_app, use_debugger=True, use_reloader=True,
+               server_class=_OhOhServer, handler_class=OhOhRequestHandler):
+    def start():
+        # Create the server
+        httpd = make_server(host, port, wsgi_app, server_class=server_class,
+                            handler_class=handler_class)
+
+        # And run it
+        LOG.log(logging.INFO, "* Serving on %s:%d %s...",
+                host, port, "with debugger" if use_debugger else "")
+
+        if use_reloader is True:
+            LOG.log(logging.INFO, "* Using reloader")
+
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            LOG.log(logging.DEBUG + 5, "Keyboard Interrupt. Stopping server.")
+            return
+
+    def before_reload():
+        LOG.log(logging.INFO, "* Restarting with reloader.")
+        LOG.log(logging.INFO, "")
+
+    if use_reloader is True:
+        server_reloader.main(start, before_reload=before_reload)
+    else:
+        start()

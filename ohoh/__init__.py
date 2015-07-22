@@ -15,7 +15,7 @@ with open(path.join(here, "VERSION.txt"), encoding="ascii") as f:
 
 
 # Verbosity levels; from 0 to 3
-VERBOSITY = [logging.INFO + 5, logging.INFO, logging.DEBUG + 5, logging.DEBUG]
+VERBOSITY = [logging.ERROR, logging.INFO, logging.DEBUG + 5, logging.DEBUG]
 LOG = logging.getLogger(__name__)
 LOG.setLevel(logging.DEBUG)
 
@@ -136,6 +136,12 @@ def build_parser():
                         "MUST come before the app argument, otherwise they "
                         "will not be added to sys.path before the app is "
                         "imported.")
+    parser.add_argument("--use-reloader", action="store_true", default=True,
+                        help="Restart server when a source file changes."
+                        " This is on by default.")
+    parser.add_argument("--disable-reloader", action="store_false",
+                        dest="use-reloader",
+                        help="Disable the reloader function.")
     return parser
 
 
