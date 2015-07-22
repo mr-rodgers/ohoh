@@ -1,5 +1,7 @@
+from __future__ import absolute_import
 from argparse import ArgumentParser
 from codecs import open
+from collections import namedtuple
 from importlib import import_module
 from os import path
 import logging
@@ -17,7 +19,7 @@ VERBOSITY = [logging.INFO + 5, logging.INFO, logging.DEBUG + 5, logging.DEBUG]
 LOG = logging.getLogger(__name__)
 LOG.setLevel(logging.DEBUG)
 
-DEFAULT_HOST = ""
+DEFAULT_HOST = "localhost"
 DEFAULT_PORT = 5000
 DEFAULT_ADDR = "{0}:{1}".format(DEFAULT_HOST, DEFAULT_PORT)
 # filename:obj | filename | pkg.mod:obj | pkg.mod
@@ -47,6 +49,9 @@ APP_REGEX = re.compile(r"""^
     $""", re.VERBOSE | re.IGNORECASE)
 
 
+Address = namedtuple("Address", "host port")
+
+
 def address(addrstr):
     if ":" in addrstr:
         host, port = addrstr.split(":", 2)
@@ -54,7 +59,7 @@ def address(addrstr):
     else:
         host = addrstr
         port = 5000
-    return host or DEFAULT_HOST, port or DEFAULT_PORT
+    return Address(host, port or DEFAULT_PORT)
 
 
 def app_spec(locstr):
@@ -135,6 +140,7 @@ def build_parser():
 
 
 def main():
+
     parser = build_parser()
     args = parser.parse_args()
 
@@ -144,6 +150,11 @@ def main():
     formatter = logging.Formatter("%(message)s")
     handler.setFormatter(formatter)
     LOG.addHandler(handler)
+
+    run_simple(args.address.host, args.address.port, args.app)
+
+
+from .wsgi import run_simple
 
 
 if __name__ == '__main__':
