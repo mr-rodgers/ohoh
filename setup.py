@@ -11,7 +11,7 @@ def read(relpath):
     with open(path.join(here, relpath), encoding="utf-8") as f:
         return f.read()
 
-requires = ["server-reloader"]
+requires = ["server-reloader", "tblib", "pyjwt>=1.0.1"]
 
 if sys.version_info < (2, 7):
     requires.append("argparse")
