@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-from io import TextIOBase
 from wsgiref.simple_server import make_server as make_wsgi_server
 from wsgiref.simple_server import WSGIRequestHandler, WSGIServer
 import logging
@@ -13,17 +12,11 @@ import ohoh
 LOG = logging.getLogger(__name__)
 
 
-class ErrOutLogger(TextIOBase):
-    def write(self, s):
-        LOG.error(s)
-        return len(s)
-
-
 class OhOhRequestHandler(WSGIRequestHandler):
     server_version = "OhOh/" + ohoh.__version__
 
     def get_stderr(self):
-        return ErrOutLogger()
+        return sys.stderr
 
     def log_message(self, format, *args):
         pass
