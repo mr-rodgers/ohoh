@@ -44,6 +44,7 @@ coverage.xml
 # Python Tools for Visual Studio
 *.pyproj
 *.suo
+*.sln
 .vs/
 
 # Translations
