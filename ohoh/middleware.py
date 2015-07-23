@@ -1,10 +1,12 @@
 from datetime import datetime, timedelta
+from StringIO import StringIO
 from wsgiref.headers import Headers
 from wsgiref.util import request_uri
 import cPickle as pickle
 import logging
 import os
 import sys
+import traceback
 
 import jwt
 
@@ -42,14 +44,15 @@ class DebugAppMiddleware(object):
             return self.handle_application_error(environ, start_response)
 
     def handle_application_error(self, environ, start_response):
-        status = "500 INTERNAL SERVER ERROR"
+        status = "500 Internal Server Error"
         headers = Headers([])
 
         # Package the exception info as into a special header and
         # send it to the client
         type, exc, tb = sys.exc_info()
 
-        message = ["{0.__name__}: {1}".format(type, exc)]
+        tbfile = StringIO()
+        traceback.print_exc(file=tbfile)
         headers['Content-Type'] = 'text/plain'
 
         LOG.debug("Packing exception info into debug header: %s",
@@ -60,7 +63,7 @@ class DebugAppMiddleware(object):
         headers[self.debug_header] = debug_header
 
         start_response(status, headers.items())
-        return message
+        return [tbfile.getvalue()]
 
     def pack_header(self, context):
         payload = {
