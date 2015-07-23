@@ -14,8 +14,9 @@ with open(path.join(here, "VERSION.txt"), encoding="ascii") as f:
     __version__ = f.read().strip()
 
 
-# Verbosity levels; from 0 to 3
-VERBOSITY = [logging.ERROR, logging.INFO, logging.DEBUG + 5, logging.DEBUG]
+# Verbosity levels; from 0 to 4
+VERBOSITY = [logging.ERROR + 1, logging.ERROR, logging.INFO,
+             logging.DEBUG + 5, logging.DEBUG]
 LOG = logging.getLogger(__name__)
 LOG.setLevel(logging.DEBUG)
 
@@ -116,7 +117,9 @@ def build_parser():
     )
     # Usage: ohoh localhost:5000 "package.module:app"
     parser.add_argument("-v", "--verbose", dest="verbosity", action="count",
-                        default=0, help="Increase the verbosity level.")
+                        default=2, help="Increase the verbosity level.")
+    parser.add_argument("-q", "--quiet", dest="silence", action="count",
+                        default=0, help="Decrease the verbosity level.")
     parser.add_argument("--serve", "-s", action="store", metavar="address",
                         type=address, default=DEFAULT_ADDR, dest="address",
                         help="The address to bind the server to. "
@@ -150,9 +153,13 @@ def main():
     parser = build_parser()
     args = parser.parse_args()
 
+    verbosity = args.verbosity - args.silence
+    verbosity = max(verbosity, 0)
+    verbosity = min(verbosity, 4)
+
     # Set up the log handler according to what the user request
     handler = logging.StreamHandler()
-    handler.setLevel(VERBOSITY[min(args.verbosity, 3)])
+    handler.setLevel(VERBOSITY[verbosity])
     formatter = logging.Formatter("%(message)s")
     handler.setFormatter(formatter)
     LOG.addHandler(handler)
