@@ -183,7 +183,8 @@ class DebugAppMiddleware(object):
         if self.token_ttl:
             payload['exp'] = datetime.utcnow() + self.token_ttl
 
-        return jwt.encode(payload, self.secret, algorithm="HS256")
+        return jwt.encode(payload, self.secret, algorithm="HS256") \
+            .decode('ascii')
 
     def unpack_header(self, header):
         try:
