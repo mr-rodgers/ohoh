@@ -11,7 +11,7 @@ def read(relpath):
     with open(path.join(here, relpath), encoding="utf-8") as f:
         return f.read()
 
-requires = ["server-reloader", "tblib", "pyjwt>=1.0.1"]
+requires = ["server-reloader", "tblib", "pyjwt>=1.0.1", "dill"]
 
 if sys.version_info < (2, 7):
     requires.append("argparse")
@@ -69,7 +69,7 @@ setup(
     install_requires=requires,
 
     extras_require={
-
+        'client': ['requests', 'httpie'],
     },
 
     package_data={
@@ -79,6 +79,9 @@ setup(
     entry_points={
         'console_scripts': [
             "ohoh=ohoh:main",
+        ],
+        'httpie.plugins.formatter.v1': [
+            "ohoh=ohoh.ext.httpie:Formatter"
         ],
     },
 
