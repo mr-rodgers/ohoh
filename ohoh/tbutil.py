@@ -45,8 +45,11 @@ class Code(ShadowMixin, tblib.Code):
 
 
 class Frame(ShadowMixin, tblib.Frame):
-    extras = {'f_code': Code}
+    extras = {'f_code': Code, 'f_lineno': None}
     deep_extras = ['f_locals', 'f_globals']
+
+    def __init__(self, f):
+        ShadowMixin.__init__(self, f)
 
 
 class Traceback(ShadowMixin, tblib.Traceback):
