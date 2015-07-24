@@ -1,6 +1,5 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import absolute_import
-from contextlib import contextmanager
 from cmd import Cmd
 import re
 import sys
@@ -24,8 +23,7 @@ class Formatter(FormatterPlugin, Cmd):
         self.enabled = True
         self.kwargs = kwargs
         self.regexp = re.compile("\s*{0}:\s*(?P<token>.+)\s*".format(
-                re.escape(self.debug_header)),
-            re.IGNORECASE
+            re.escape(self.debug_header)), re.IGNORECASE
         )
         Cmd.__init__(self)
 
@@ -80,9 +78,9 @@ class Formatter(FormatterPlugin, Cmd):
 
         # Query the debug server.
         headers = {self.debug_header: self.debug_token}
-        response =  requests.post("http://" + self.debug_uri,
-                                  data=line.encode("utf8"), timeout=10,
-                                  headers=headers)
+        response = requests.post("http://" + self.debug_uri,
+                                 data=line.encode("utf8"), timeout=10,
+                                 headers=headers)
 
         if response.status_code == 200:
             self.debug_token = response.headers.get(self.debug_header, None)

@@ -1,5 +1,4 @@
 from base64 import b64decode, b64encode
-from codecs import EncodedFile
 from datetime import datetime, timedelta
 from io import BytesIO
 from pdb import Pdb
@@ -70,7 +69,7 @@ class DebugAppMiddleware(object):
         debug_token = request_headers[self.debug_header]
         LOG.debug("Unpacking context from debug header '%s: %s'",
                   self.debug_header, debug_token)
-        obj  = self.unpack_header(request_headers[self.debug_header])
+        obj = self.unpack_header(request_headers[self.debug_header])
 
         if obj is None:
             LOG.debug("Debug header invalid.")
@@ -207,6 +206,7 @@ def get_headers(environ):
     headers['Content-Type'] = environ['CONTENT_TYPE']
     headers['Content-Length'] = environ['CONTENT_LENGTH']
     return headers
+
 
 def get_content_charset(headers, default="utf-8"):
     content_type_header = headers['content-type']
