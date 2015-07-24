@@ -168,7 +168,7 @@ class DebugAppMiddleware(object):
         headers[self.debug_header] = debug_header
 
         app_uri = application_uri(environ)
-        headers["Location"] = app_uri + self.debug_uri
+        headers["Location"] = app_uri[:-1] + self.debug_uri
 
         start_response(status, headers.items())
         return [tbfile.getvalue()]
@@ -204,8 +204,11 @@ def get_headers(environ):
         (name[5:].replace("_", "-"), environ[name]) for name in environ
         if name.startswith("HTTP_")
     ])
-    headers['Content-Type'] = environ['CONTENT_TYPE']
-    headers['Content-Length'] = environ['CONTENT_LENGTH']
+    if 'CONTENT_TYPE' in environ:
+        headers['Content-Type'] = environ['CONTENT_TYPE']
+    if 'CONTENT_LENGTH' in environ:
+        headers['Content-Length'] = environ['CONTENT_LENGTH']
+
     return headers
 
 
