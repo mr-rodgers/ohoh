@@ -11,7 +11,7 @@ except ImportError:
 import pytest
 from ohoh.middleware import DebugAppMiddleware
 
-from mock_app import simple_err_app, stored_tb, stored_debugger_state
+from mock_app import simple_err_app
 
 
 class Response(namedtuple("response", "status headers output")):
@@ -43,6 +43,25 @@ def environ():
     env = {}
     setup_testing_defaults(env)
     return env
+
+@pytest.fixture
+def saved_tb(environ):
+    application = DebugAppMiddleware(simple_err_app)
+    response = request(application, environ)
+    return response.headers[DebugAppMiddleware.debug_header]
+
+@pytest.fixture
+def saved_debug_state(environ, saved_tb):
+    environ.update({
+        'PATH_INFO': DebugAppMiddleware.debug_uri,
+        "REQUEST_METHOD": "POST",
+        "HTTP_" + DebugAppMiddleware.debug_header: saved_tb,
+        "CONTENT_LENGTH": '2',
+        "wsgi.input": BytesIO(b'up'),
+    })
+    application = DebugAppMiddleware(demo_app)
+    response = request(application, environ)
+    return response.headers[DebugAppMiddleware.debug_header]
 
 
 debug_middleware_args = [
@@ -94,24 +113,33 @@ def test_error_codes(environ, aug_environ, status):
 
     assert response.code == status
 
-@pytest.mark.parametrize("header,data,result", [
-    (stored_tb, b"up",
-     b"> c:\\python34\\lib\\ntpath.py(110)join()\n"
-     b"-> p_drive, p_path = splitdrive(p)\n"),
-    (stored_debugger_state, b"down",
-     b"> c:\\python34\\lib\\ntpath.py(159)splitdrive()\n-> if len(p) > 1:\n")
-])
-def test_debug_request(environ, header, data, result):
+def test_debug_request_with_fresh_tb(environ, saved_tb):
     environ.update({
         'PATH_INFO': DebugAppMiddleware.debug_uri,
         "REQUEST_METHOD": "POST",
-        "HTTP_" + DebugAppMiddleware.debug_header: header,
-        "CONTENT_LENGTH": str(len(data)),
-        "wsgi.input": BytesIO(data),
+        "HTTP_" + DebugAppMiddleware.debug_header: saved_tb,
+        "CONTENT_LENGTH": '2',
+        "wsgi.input": BytesIO(b'up'),
     })
     application = DebugAppMiddleware(demo_app)
     response = request(application, environ)
 
-    print (response.data, result, sep='\n')
-    assert response.data == result
+    assert response.data.decode("utf-8").endswith(
+        "\n-> p_drive, p_path = splitdrive(p)\n"
+    )
+
+def test_debug_request_with_saved_state(environ, saved_debug_state):
+    environ.update({
+        'PATH_INFO': DebugAppMiddleware.debug_uri,
+        "REQUEST_METHOD": "POST",
+        "HTTP_" + DebugAppMiddleware.debug_header: saved_debug_state,
+        "CONTENT_LENGTH": '4',
+        "wsgi.input": BytesIO(b'down'),
+    })
+    application = DebugAppMiddleware(demo_app)
+    response = request(application, environ)
+
+    assert response.data.decode("utf-8").endswith(
+        "\n-> if len(p) > 1:\n"
+    )
 
