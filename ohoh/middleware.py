@@ -23,7 +23,7 @@ LOG = logging.getLogger(__name__)
 
 class DebugAppMiddleware(object):
     debug_header = "OhOh-Debug-Token"
-    token_ttl = timedelta(hours=1)
+    token_ttl = 0  # timedelta(hours=1) # not tested
     secret = 'a51dfa470cae45bcd88b2e9ac5562fa5e26e5c5'
     debug_uri = "/ohoh-debug/"
     max_content_length = 1024
@@ -122,7 +122,7 @@ class DebugAppMiddleware(object):
         response = outfile.getvalue()
         LOG.debug("Debugger response: %r", response)
 
-        headers = [("Content-Type", "text/plain")]
+        headers = [("Content-Type", "text/plain; charset=utf-8")]
 
         if stop:
             LOG.debug("Done debugging. Not sending a header.")
@@ -146,7 +146,7 @@ class DebugAppMiddleware(object):
             headers.append((self.debug_header, debug_header))
 
         start_response("200 OK", headers)
-        return [response]
+        return [response.encode('utf-8')]
 
     def handle_application_error(self, environ, start_response):
         status = "500 Internal Server Error"
@@ -157,8 +157,9 @@ class DebugAppMiddleware(object):
         type, exc, tb = sys.exc_info()
 
         tbfile = StringIO()
+
         traceback.print_exc(file=tbfile)
-        headers['Content-Type'] = 'text/plain'
+        headers['Content-Type'] = 'text/plain; charset=utf-8'
 
         LOG.debug("Packing traceback context into debug header: %s",
                   self.debug_header)
@@ -171,7 +172,7 @@ class DebugAppMiddleware(object):
         headers["Location"] = app_uri[:-1] + self.debug_uri
 
         start_response(status, headers.items())
-        return [tbfile.getvalue()]
+        return [tbfile.getvalue().encode('utf-8')]
 
     def pack_header(self, context):
         pickled = pickle.dumps(context)
