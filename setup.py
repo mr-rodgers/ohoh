@@ -69,7 +69,8 @@ setup(
     install_requires=requires,
 
     extras_require={
-        'client': ['requests', 'httpie'],
+        'httpie_plugin': ['httpie', 'pygments', 'requests'],
+        'client_tools': ['requests'],
     },
 
     package_data={
@@ -81,7 +82,7 @@ setup(
             "ohoh=ohoh:main",
         ],
         'httpie.plugins.formatter.v1': [
-            "ohoh=ohoh.ext.httpie:Formatter"
+            "ohoh=ohoh.clients.httpie:Formatter"
         ],
     },
 
