@@ -1,5 +1,5 @@
 from base64 import b64decode, b64encode
-from datetime import datetime, timedelta
+from datetime import datetime
 from io import BytesIO
 from pdb import Pdb
 from StringIO import StringIO
