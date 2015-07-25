@@ -12,7 +12,7 @@ Usage
 
 Use this command to serve your wsgi app in debug mode::
 
-    > ohoh "package.module:wsgi_app" -s host:port
+    > ohoh "package.module:wsgi_app" -s localost:5000
 
 For a full range of options, see ``ohoh -h``
 
@@ -20,14 +20,13 @@ OhOh provides a plug-in for the ``httpie`` utility. You can install ``httpie``
 using ``pip install httpie``. Once you send a request that results in an
 exception, you will enter the debugger automatically::
 
-    > http localhost
-
+    > http localhost:5000
     HTTP/1.0 500 Internal Server Error
     Date: Fri, 24 Jul 2015 23:41:20 GMT
     Server: WSGIServer/0.2 CPython/3.4.2
     Content-Type: text/plain; charset=utf-8
     OhOh-Debug-Token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1N [Truncated (5061 chars) ...]
-    Location: http://localhost/ohoh-debug/
+    Location: http://localhost:5000/ohoh-debug/
     Content-Length: 454
 
     Traceback (most recent call last):
@@ -41,6 +40,9 @@ exception, you will enter the debugger automatically::
         if len(p) > 1:
     TypeError: object of type 'int' has no len()
     OhOh Interactive Debugger v0.1.dev28+n8ec9121
+    (odb) up
+    > c:\python34\lib\ntpath.py(110)join()
+    -> p_drive, p_path = splitdrive(p)
     (odb)
 
 
