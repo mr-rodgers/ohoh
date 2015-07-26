@@ -41,7 +41,8 @@ class ShadowMixin(object):
 
 
 class Code(ShadowMixin, tblib.Code):
-    extras = {'co_lnotab': None}
+    extras = {'co_lnotab': None, 'co_argcount': None,
+              'co_varnames': None}
 
 
 class Frame(ShadowMixin, tblib.Frame):
