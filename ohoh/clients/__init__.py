@@ -1,4 +1,5 @@
 from cmd import Cmd
+import re
 import requests
 import sys
 
@@ -44,10 +45,18 @@ class DebuggerCliClient(Cmd):
             return -1
 
     def precmd(self, line):
-        client_commands = ("exit", "version", "token")
-        if line.strip() not in client_commands and self.debug_token is None:
-            self.stderr.write("*** Debug token has not been set.\n")
-            line = ""
+        client_commands = (u"exit", u"version", u"token" u"url")
+        cl_cmd_reg = re.compile(
+            ur"(?:{0})\s".format(
+                u"|".join([
+                    re.escape(cl_cmd) for cl_cmd in client_commands
+                ])
+            )
+        )
+
+        if self.debug_token is None and cl_cmd_reg.match(line):
+            self.stderr.write(u"*** Debug token has not been set.\n")
+            line = u""
         return line
 
     def emptyline(self):
@@ -60,8 +69,25 @@ class DebuggerCliClient(Cmd):
         self.stdout.write(self.intro)
         self.stdout.write("\n")
 
-    def do_token(self, args):
-        self.stdout.write(self.debug_token)
+    def do_token(self, new_token):
+        if new_token:
+            self.debug_token = new_token
+            self.stdout.write("*** New debug token has been set.")
+        else:
+            self.stdout.write(self.debug_token)
+
+        self.stdout.write("\n")
+
+    def do_url(self, new_url):
+        if new_url:
+            if not re.match("http[s]://", new_url, re.I):
+                new_url = "http://" + new_url
+
+            self.debug_uri = new_url
+            self.stdout.write("*** New debug url has been set.")
+        else:
+            self.stdout.write(self.debug_uri)
+
         self.stdout.write("\n")
 
     def default(self, line):
