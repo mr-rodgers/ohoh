@@ -56,7 +56,7 @@ The following commands are supported by the command interpreter
 Command             Description
 ---------------     --------------------------------------------------------
 Client commands
-============================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 quit                Exit the debugger.
 ---------------     --------------------------------------------------------
 token               View the current debug server token.
@@ -66,7 +66,7 @@ url                 View or set the url to which debug requests are sent.
 version             View the version number of the debugger.
 ---------------     --------------------------------------------------------
 Debug commands
-============================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !                   Execute a one-line statement in the current context.
 ---------------     --------------------------------------------------------
 args                Print the argument list to the current function.
