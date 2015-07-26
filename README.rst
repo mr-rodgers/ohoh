@@ -53,33 +53,33 @@ The following commands are supported by the command interpreter
 (you can type ``help`` at the debugger prompt for online help with commands):
 
 +-------------------+-----------------------------------------------------------+
-+ Command           + Description                                               +
++ Command           | Description                                               +
 +===================+===========================================================+
 + Client commands                                                               +
 +===================+===========================================================+
-+ quit              + Exit the debugger.                                        +
++ quit              | Exit the debugger.                                        +
 +-------------------+-----------------------------------------------------------+
-+ token             +  View the current debug server token.                     +
++ token             |  View the current debug server token.                     +
 +-------------------+-----------------------------------------------------------+
-+ url               +  View or set the url to which debug requests are sent.    +
++ url               |  View or set the url to which debug requests are sent.    +
 +-------------------+-----------------------------------------------------------+
-+ version           +  View the version number of the debugger.                 +
++ version           |  View the version number of the debugger.                 +
 +-------------------+-----------------------------------------------------------+
 + Debug commands                                                                +
 +===================+===========================================================+
-+ !                 +  Execute a one-line statement in the current context.     +
++ !                 |  Execute a one-line statement in the current context.     +
 +-------------------+-----------------------------------------------------------+
-+ args              +  Print the argument list to the current function.         +
++ args              |  Print the argument list to the current function.         +
 +-------------------+-----------------------------------------------------------+
-+ p                 +  Print the value of an expression.                        +
++ p                 |  Print the value of an expression.                        +
 +-------------------+-----------------------------------------------------------+
-+ pp                +  Pretty print the value of an expression.                 +
++ pp                |  Pretty print the value of an expression.                 +
 +-------------------+-----------------------------------------------------------+
-+ where             +  Print the stack trace, with the most recent call last.   +
++ where             |  Print the stack trace, with the most recent call last.   +
 +-------------------+-----------------------------------------------------------+
-+ up                +  Move up one frame in the stack.                          +
++ up                |  Move up one frame in the stack.                          +
 +-------------------+-----------------------------------------------------------+
-+ down              +  Move down one frame in the stack.                        +
++ down              |  Move down one frame in the stack.                        +
 +===================+===========================================================+
 
 
