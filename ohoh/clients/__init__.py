@@ -10,7 +10,7 @@ class DebuggerCliClient(Cmd):
     debug_header = "OhOh-Debug-Token"
 
     #: The location on the debug server that debug commands are sent to
-    debug_uri = "localhost:5000/ohoh-debug/"
+    debug_uri = "http://localhost:5000/ohoh-debug/"
 
     #: Last received value from the debug header
     debug_token = None
@@ -67,7 +67,7 @@ class DebuggerCliClient(Cmd):
     def default(self, line):
         # Query the debug server.
         headers = {self.debug_header: self.debug_token}
-        response = requests.post("http://" + self.debug_uri,
+        response = requests.post(self.debug_uri,
                                  data=line.encode("utf8"), timeout=30,
                                  headers=headers)
 

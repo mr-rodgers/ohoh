@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+
 from httpie.plugins import FormatterPlugin
 
 from ohoh.clients import DebuggerCliClient
@@ -17,7 +19,7 @@ class Formatter(DebuggerCliClient, FormatterPlugin):
         header_list = [
             (part[0], part[-1])
             for part in [
-                hstr.partition(":") for hstr in
+                hstr.partition(u": ") for hstr in
                 headers.splitlines(False)
             ]
         ]
@@ -38,7 +40,7 @@ class Formatter(DebuggerCliClient, FormatterPlugin):
                 header_list[idx] = header, val
 
             return u"\n".join([
-                ":".join((h, v)) for h, v in header_list
+                u": ".join((h, v)) for h, v in header_list
             ])
 
     def format_body(self, content, mime):
