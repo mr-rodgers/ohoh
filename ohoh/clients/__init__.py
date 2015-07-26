@@ -18,6 +18,8 @@ class DebuggerCliClient(Cmd):
 
     intro = "OhOh Interactive Debugger v" + __version__
     prompt = "(odb) "
+    doc_header = "Client commands (type help <topic>):"
+    misc_header = "Debug commands (type help <topic>):"
 
     stdout = sys.stdout
     stderr = sys.stderr
@@ -62,7 +64,7 @@ class DebuggerCliClient(Cmd):
     def emptyline(self):
         return
 
-    def do_exit(self, args):
+    def do_quit(self, args):
         return True
 
     def do_version(self, args):
@@ -108,3 +110,56 @@ class DebuggerCliClient(Cmd):
             self.stderr.write("*** Failed to issue remote debugger command.\n")
 
         return
+
+    def completedefault(self, text, line, begidx, endidx):
+        return [
+            cmd_name for cmd_name in COMMANDS
+            if cmd_name.startswith(text) and begidx == 0
+        ]
+
+
+COMMANDS = {
+    # Client commands
+    'quit': "Exit the debugger.",
+    'token': "token [new-token]\n\t"
+             "Show or set the current debug token. You typically won't \n\t"
+             "need to use this since most clients will set it for you.",
+    'url': "url [debug-url]\n\t"
+           "Show or set the url to be used for debug requests.",
+    'version': "Show the client's version number.",
+
+    # Server commands
+    'where': "Print a stack trace, with the most recent frame at the \n\t"
+             "bottom. An arrow indicates the current frame, which \n\t"
+             "determines the context of most commands.",
+    'down': "Move the current frame one level down in the stack trace (to \n\t"
+            "a newer frame).",
+    'up': "Move the current frame one level up in the stack trace (to an \n\t"
+          "older frame).",
+    'p': "p expression\n\t"
+         "Evaluate the expression in the current context and print its value.",
+    'args': "Print the argument list to the current function.",
+    'pp': "pp expression\n\t"
+          "Like the ``p`` command, except the value of the expression is \n\t"
+          "pretty-printed using the pprint module",
+    '!': "(!)statement\n\t"
+            "Execute the (one-line) statement in the context of the \n\t"
+            "current stack frame. The exclamation point can be omitted \n\t"
+            "unless the first word of the statement resembles a debugger\n\t"
+            "command. To set a global variable, you can prefix the\n\t"
+            "assignment command with a global command on the same line.",
+}
+
+
+def make_helper(name):
+    def help(self):
+        if not COMMANDS[name].startswith(name) and name != "!":
+            self.stdout.write(name)
+            self.stdout.write("\n\t")
+        self.stdout.write(COMMANDS[name])
+        self.stdout.write("\n")
+    return help
+
+
+for name in COMMANDS:
+    setattr(DebuggerCliClient, "help_" + name, make_helper(name))
