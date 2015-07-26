@@ -80,7 +80,7 @@ The following commands are supported by the command interpreter
 + up                |  Move up one frame in the stack.                          +
 +-------------------+-----------------------------------------------------------+
 + down              |  Move down one frame in the stack.                        +
-+===================+===========================================================+
++-------------------+-----------------------------------------------------------+
 
 
 Check back later for a list of supported commands.
