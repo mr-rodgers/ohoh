@@ -1,16 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
-from cmd import Cmd
-import re
-import sys
-
 from httpie.plugins import FormatterPlugin
-from pygments import highlight
-from pygments.lexers import get_lexer_by_name
-from pygments.formatters import TerminalFormatter
-import requests
 
-from ohoh import __version__
 from ohoh.clients import DebuggerCliClient
 
 
@@ -26,10 +16,10 @@ class Formatter(DebuggerCliClient, FormatterPlugin):
     def format_headers(self, headers):
         header_list = [
             (part[0], part[-1])
-            for part in map(
-                lambda hstr: hstr.partition(":"),
+            for part in [
+                hstr.partition(":") for hstr in
                 headers.splitlines(False)
-            )
+            ]
         ]
         idx = self.find_debug_header(header_list)
 
@@ -48,7 +38,7 @@ class Formatter(DebuggerCliClient, FormatterPlugin):
                 header_list[idx] = header, val
 
             return u"\n".join([
-                ":".join((header, val)) for header, val in header_list
+                ":".join((h, v)) for h, v in header_list
             ])
 
     def format_body(self, content, mime):
