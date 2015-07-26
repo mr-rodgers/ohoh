@@ -26,7 +26,7 @@ if (3, ) <= sys.version_info < (3, 1):
 
 setup(
     name='ohoh',
-    version="0.0.0",
+    version="0.1.0",
 
     description='A debug server for WSGI apps.',
     long_description=read("README.rst"),
