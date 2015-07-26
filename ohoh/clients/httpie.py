@@ -61,3 +61,4 @@ class Formatter(DebuggerCliClient, FormatterPlugin):
 
     def preloop(self):
         self.stderr.write(self.traceback_text)
+        self.stderr.write("\n")
