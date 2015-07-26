@@ -1,0 +1,19 @@
+language: python
+python:
+    - "2.7"
+    - "3.2"
+    - "3.3"
+    - "3.4"
+    - "pypy"
+    - "pypy3"
+    - "nightly"
+install:
+    - "pip install tox"
+script: 
+    - "tox -e envpy -e flake8"
+matrix:
+    allow_failures:
+        - python: "3.2"
+        - python: nightly
+        - python: pypy
+        - python: pypy3
