@@ -83,10 +83,6 @@ The following commands are supported by the command interpreter
 +-------------------+-----------------------------------------------------------+
 
 
-Check back later for a list of supported commands.
-
-
-
 .. |build-status| image:: https://travis-ci.org/te-je/ohoh.svg?branch=develop
     :target: https://travis-ci.org/te-je/ohoh
     :alt: build status
